@@ -2,10 +2,9 @@
 name: 'Close stale issues and PRs'
 on:
 schedule:
-    - cron: '30 1 * * *'
+    - cron: "*/1 * * * *"
 permissions:
   issues: write
-
 jobs:
   stale:
     runs-on: ubuntu-latest
