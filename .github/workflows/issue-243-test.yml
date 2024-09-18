@@ -3,7 +3,7 @@ name: 'Close stale issues and PRs'
 on:
   schedule:
     - cron: '30 1 * * *'
-push:
+  push:
     branches: suyashgaonkar-issue-243
 permissions:
   issues: write
