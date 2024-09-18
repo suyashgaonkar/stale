@@ -1,10 +1,9 @@
 #stale
 name: 'Close stale issues and PRs'
 on:
+workflow_dispatch:
   schedule:
     - cron: '30 1 * * *'
-  push:
-    branches: suyashgaonkar-issue-243
 permissions:
   issues: write
 
