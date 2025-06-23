@@ -739,6 +739,19 @@ class IssuesProcessor {
             }
         });
     }
+    getRateLimitWithFallback() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const logger = new logger_1.Logger();
+            const octokit = (0, github_1.getOctokit)(core.getInput('repo-token'), undefined, () => { });
+            try {
+                const rateLimitResult = yield octokit.rest.rateLimit.get();
+                return new rate_limit_1.RateLimit(rateLimitResult.data.rate);
+            }
+            catch (error) {
+                logger.error(`Error when getting rateLimit: ${error.message}`);
+            }
+        });
+    }
     getRateLimit() {
         return __awaiter(this, void 0, void 0, function* () {
             const logger = new logger_1.Logger();
@@ -747,6 +760,11 @@ class IssuesProcessor {
                 return new rate_limit_1.RateLimit(rateLimitResult.data.rate);
             }
             catch (error) {
+                if (error)
+                    if (error.status === 404) {
+                        //:fallback logic
+                        this.getRateLimitWithFallback();
+                    }
                 logger.error(`Error when getting rateLimit: ${error.message}`);
             }
         });
