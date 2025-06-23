@@ -665,7 +665,7 @@ export class IssuesProcessor {
       if (error.status === 404) {
           //:fallback logic
           this.getRateLimitWithFallback()
-          return;
+
       }
       logger.error(`Error when getting rateLimit: ${error.message}`);
     }
