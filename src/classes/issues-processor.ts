@@ -1,6 +1,5 @@
 import * as core from '@actions/core';
 import {context, getOctokit} from '@actions/github';
-import {Octokit} from '@octokit/core';
 import {GitHub} from '@actions/github/lib/utils';
 import {Option} from '../enums/option';
 import {getHumanizedDate} from '../functions/dates/get-humanized-date';
