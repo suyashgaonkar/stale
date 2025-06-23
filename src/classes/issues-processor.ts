@@ -1,5 +1,6 @@
 import * as core from '@actions/core';
 import {context, getOctokit} from '@actions/github';
+import { Octokit } from '@octokit/core';
 import {GitHub} from '@actions/github/lib/utils';
 import {Option} from '../enums/option';
 import {getHumanizedDate} from '../functions/dates/get-humanized-date';
@@ -639,12 +640,33 @@ export class IssuesProcessor {
     }
   }
 
+
+  async getRateLimitWithFallback() : Promise<IRateLimit | undefined> {
+    const logger: Logger = new Logger();
+    const octokit = getOctokit(core.getInput('repo-token'),undefined,()=>{})
+    try {
+      const rateLimitResult = await octokit.rest.rateLimit.get()
+      return new RateLimit(rateLimitResult.data.rate);
+    } catch (error) {
+      logger.error(`Error when getting rateLimit: ${error.message}`);
+    }
+
+  }
+  
+  
+
   async getRateLimit(): Promise<IRateLimit | undefined> {
     const logger: Logger = new Logger();
     try {
       const rateLimitResult = await this.client.rest.rateLimit.get();
       return new RateLimit(rateLimitResult.data.rate);
     } catch (error) {
+      if(error)
+      if (error.status === 404) {
+          //:fallback logic
+          this.getRateLimitWithFallback()
+          return;
+      }
       logger.error(`Error when getting rateLimit: ${error.message}`);
     }
   }
